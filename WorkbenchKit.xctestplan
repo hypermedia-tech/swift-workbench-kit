@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "6FF60F13-C5FF-4825-AC35-CBA284E860D3",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WorkbenchKitTests",
+        "name" : "WorkbenchKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}
