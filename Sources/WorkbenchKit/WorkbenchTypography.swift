@@ -20,6 +20,11 @@ public enum WorkbenchTypography {
     /// A block's name, in its header.
     public static let blockTitle = Font.headline
 
+    /// A heading inside a block, below the block's own name — the thing a section's second-level
+    /// heading starts, named. Smaller than `blockTitle` because it is subordinate to it, and
+    /// weighted because it is still a heading.
+    public static let subheading = Font.callout.weight(.semibold)
+
     /// A fact row's value. Tabular figures so a column of them lines up.
     public static let value = Font.callout.monospacedDigit()
 
