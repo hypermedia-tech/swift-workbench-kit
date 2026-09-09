@@ -37,6 +37,8 @@ public struct WorkbenchPaletteGallery: View {
                                         backdrop: WorkbenchPalette.inset)
 
                 WorkbenchGalleryTypeSpecimen()
+
+                WorkbenchGalleryBlockSpecimen()
             }
             .padding(WorkbenchMetrics.blockSpacing)
         }

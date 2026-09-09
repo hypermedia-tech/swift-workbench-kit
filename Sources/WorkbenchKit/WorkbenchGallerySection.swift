@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// A titled group of swatches — the gallery's own use of the blocking vocabulary it is showing
-/// off: a block with a header, rows divided by lines rather than gaps.
+/// A titled group of swatches — now nothing but a `WorkbenchBlock` with a header and hairline-
+/// divided rows, which is the point: the block chrome this view used to carry verbatim (and
+/// carried a second time in `WorkbenchGalleryTypeSpecimen`) lives in one place.
 public struct WorkbenchGallerySection: View {
     private let title: String
     private let rows: [WorkbenchGalleryEntry]
@@ -14,29 +15,12 @@ public struct WorkbenchGallerySection: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text(title)
-                .labelRegister()
-                .padding(.horizontal, WorkbenchMetrics.blockHInset)
-                .padding(.vertical, WorkbenchMetrics.blockRowVInset)
-            Rectangle()
-                .fill(WorkbenchPalette.hairline.color)
-                .frame(height: WorkbenchMetrics.hairlineWidth)
-            ForEach(rows.enumerated(), id: \.element.id) { index, row in
+        WorkbenchBlock {
+            WorkbenchBlockHeader(kicker: "Tokens", title: title, count: rows.count)
+        } content: {
+            WorkbenchRows(rows) { row in
                 WorkbenchGallerySwatchRow(name: row.name, token: row.token, backdrop: backdrop)
-                    .overlay(alignment: .bottom) {
-                        Rectangle()
-                            .fill(WorkbenchPalette.hairlineSoft.color)
-                            .frame(height: WorkbenchMetrics.hairlineWidth)
-                            .opacity(index == rows.count - 1 ? 0 : 1)
-                    }
             }
-        }
-        .background(WorkbenchPalette.block.color)
-        .clipShape(.rect(cornerRadius: WorkbenchMetrics.blockCornerRadius))
-        .overlay {
-            RoundedRectangle(cornerRadius: WorkbenchMetrics.blockCornerRadius)
-                .strokeBorder(WorkbenchPalette.hairline.color, lineWidth: WorkbenchMetrics.hairlineWidth)
         }
     }
 }
