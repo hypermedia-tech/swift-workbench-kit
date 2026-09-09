@@ -78,6 +78,14 @@ public enum WorkbenchMetrics {
     /// square rather than accidental.
     public static let blockSpacing: CGFloat = 12
 
+    /// Width of the label column in a fact row that cannot use `WorkbenchFactRows`.
+    ///
+    /// `WorkbenchFactRows` gets its alignment from a `Grid`, which builds every row — right for a
+    /// block of five facts and wrong for a fold holding a package inventory, where the rows must
+    /// stay lazy. A lazily-realised row cannot know how wide the widest label is, so it is given a
+    /// column instead. Labels wrap inside it rather than truncating.
+    public static let factLabelWidth: CGFloat = 168
+
     /// Narrowest a cell in a hairline-divided cell grid may be before the grid drops a column.
     /// Wider than the reference page's 112 because Mac text is larger.
     public static let cellMinWidth: CGFloat = 120
