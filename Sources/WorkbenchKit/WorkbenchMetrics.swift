@@ -54,4 +54,31 @@ public enum WorkbenchMetrics {
     /// Max height of the popover's scrollable body region before it scrolls (bounds a long body so
     /// the popover can't grow without limit).
     public static let detailPopoverBodyMaxHeight: CGFloat = 240
+    
+    // MARK: - Content-layer blocks (LOOK)
+
+    /// Corner radius of a block. The reference page uses five; six is what the one bordered block
+    /// already in the estate uses, and matching it costs nothing.
+    public static let blockCornerRadius: CGFloat = 6
+
+    /// Corner radius of a region nested inside a block — a fold's body, an evidence area.
+    public static let insetCornerRadius: CGFloat = 4
+
+    /// A separator's thickness. One POINT, not one pixel: a pixel line lands unevenly between grid
+    /// cells at Retina scale, and the cell grid is where hairlines do the most work.
+    public static let hairlineWidth: CGFloat = 1
+
+    /// Horizontal inset for content inside a block.
+    public static let blockHInset: CGFloat = 12
+
+    /// Vertical inset for a row inside a block, and for a block header.
+    public static let blockRowVInset: CGFloat = 10
+
+    /// Gap between blocks on the ground. Matches `blockHInset`, so the gutter round a block reads
+    /// square rather than accidental.
+    public static let blockSpacing: CGFloat = 12
+
+    /// Narrowest a cell in a hairline-divided cell grid may be before the grid drops a column.
+    /// Wider than the reference page's 112 because Mac text is larger.
+    public static let cellMinWidth: CGFloat = 120
 }
