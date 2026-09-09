@@ -158,6 +158,20 @@ struct WorkbenchPaletteTests {
         #expect(WorkbenchPalette.token(for: .neutral).light == WorkbenchPalette.textSecondary.light)
     }
 
+    /// §5 tells the owner to change the hover tint and look again. A tint too weak to see is not a
+    /// hover, and one strong enough to read as a selection is a different affordance — so the lift
+    /// it produces over each fill it is drawn on is bounded, the same way the separators are.
+    @Test("A hover lifts its fill perceptibly without reading as a selection",
+          arguments: [ColorScheme.light, .dark])
+    func theHoverTintLiftsWithinItsBand(scheme: ColorScheme) {
+        let tint = WorkbenchPalette.hoverTint.value(for: scheme)
+        for (name, fill) in [("block", WorkbenchPalette.block), ("inset", WorkbenchPalette.inset)] {
+            let ground = fill.value(for: scheme)
+            let lift = WorkbenchContrast.ratio(tint.composited(over: ground), ground)
+            #expect(lift >= 1.05 && lift <= 1.35, "\(scheme) hover on \(name) lifts \(lift)")
+        }
+    }
+
     @Test func theHoverTintIsATintAndNotAFill() {
         #expect(WorkbenchPalette.hoverTint.dark.alpha < 1)
         #expect(WorkbenchPalette.hoverTint.light.alpha < 1)
