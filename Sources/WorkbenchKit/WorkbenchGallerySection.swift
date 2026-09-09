@@ -16,7 +16,7 @@ public struct WorkbenchGallerySection: View {
 
     public var body: some View {
         WorkbenchBlock {
-            WorkbenchBlockHeader(kicker: "Tokens", title: title, count: rows.count)
+            WorkbenchBlockHeader(kicker: "Tokens", title: title)
         } content: {
             WorkbenchRows(rows) { row in
                 WorkbenchGallerySwatchRow(name: row.name, token: row.token, backdrop: backdrop)

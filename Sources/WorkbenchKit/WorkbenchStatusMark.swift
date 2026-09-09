@@ -9,6 +9,12 @@ import SwiftUI
 public struct WorkbenchStatusMark: View {
     private let tone: WorkbenchPalette.Tone
 
+    /// The mark's LENGTH tracks the line it marks, so it still reads as a rule beside the title at
+    /// larger Dynamic Type instead of shrinking into a dot — the same reason `WorkbenchCellGrid`
+    /// scales its minimum. Relative to `.headline` because that is the register of the title it
+    /// stands beside. Its THICKNESS does not scale: it is a rule, like a hairline.
+    @ScaledMetric(relativeTo: .headline) private var length: CGFloat = 14
+
     public init(_ tone: WorkbenchPalette.Tone) {
         self.tone = tone
     }
@@ -16,7 +22,7 @@ public struct WorkbenchStatusMark: View {
     public var body: some View {
         RoundedRectangle(cornerRadius: 1)
             .fill(WorkbenchPalette.color(tone))
-            .frame(width: 3, height: 14)
+            .frame(width: 3, height: length)
             .accessibilityHidden(true)
     }
 }

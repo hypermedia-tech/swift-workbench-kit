@@ -23,7 +23,8 @@ public struct WorkbenchCellGrid: View {
             minimumCellWidth: minimumCellWidth,
             spacing: WorkbenchMetrics.hairlineWidth
         ) {
-            ForEach(cells) { cell in
+            // Keyed by position: a cell's label is not unique (see `WorkbenchCell`).
+            ForEach(cells.enumerated(), id: \.offset) { _, cell in
                 WorkbenchCellView(cell)
             }
         }

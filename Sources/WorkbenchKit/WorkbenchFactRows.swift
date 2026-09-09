@@ -6,6 +6,10 @@ import SwiftUI
 /// so the values start at a different x on every line and the block reads as typeset by accident.
 /// One grid means one label column, and the alignment is a property of the block rather than a
 /// coincidence between its rows.
+///
+/// The `Grid` builds every row to measure that column, so this is the view for a handful of facts.
+/// For an unbounded list — a fold holding a package inventory — use `WorkbenchLazyFactRows`, which
+/// trades the measured column for a fixed one and stays lazy.
 public struct WorkbenchFactRows: View {
     private let facts: [WorkbenchFact]
 
@@ -17,7 +21,7 @@ public struct WorkbenchFactRows: View {
         Grid(alignment: .leadingFirstTextBaseline,
              horizontalSpacing: WorkbenchMetrics.blockHInset,
              verticalSpacing: 0) {
-            ForEach(facts.enumerated(), id: \.element.id) { index, fact in
+            ForEach(facts.enumerated(), id: \.offset) { index, fact in
                 GridRow {
                     Text(fact.label)
                         .labelRegister()

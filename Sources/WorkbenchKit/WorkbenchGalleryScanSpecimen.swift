@@ -12,14 +12,6 @@ public struct WorkbenchGalleryScanSpecimen: View {
         self.initiallyExpanded = initiallyExpanded
     }
 
-    private static let facts: [WorkbenchFact] = [
-        .init(label: "Scanner", value: "Trivy 0.58.1"),
-        .init(label: "Scanned", value: "9 September 2026, 14:02"),
-        .init(label: "Target", value: "my-awesome-docker-image:2.3.0"),
-        .init(label: "Digest", value: "a3c9f1e4b7d2"),
-        .init(label: "Result", value: "3 critical", tone: .alarm),
-    ]
-
     private static let scanFacts: [WorkbenchFact] = [
         .init(label: "Vulnerability DB", value: "2026-09-08 12:00:04"),
         .init(label: "Java DB", value: "2026-09-01 04:11:20"),
@@ -31,7 +23,7 @@ public struct WorkbenchGalleryScanSpecimen: View {
             WorkbenchBlockHeader(kicker: kicker, title: "Scan")
         } content: {
             VStack(alignment: .leading, spacing: 0) {
-                WorkbenchFactRows(Self.facts)
+                WorkbenchFactRows(WorkbenchGallerySpecimenFacts.five)
                 Rectangle()
                     .fill(WorkbenchPalette.hairline.color)
                     .frame(height: WorkbenchMetrics.hairlineWidth)

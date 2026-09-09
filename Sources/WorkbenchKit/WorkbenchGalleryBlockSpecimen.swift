@@ -29,14 +29,14 @@ public struct WorkbenchGalleryBlockSpecimen: View {
         VStack(alignment: .leading, spacing: WorkbenchMetrics.blockSpacing) {
             WorkbenchBlock {
                 WorkbenchBlockHeader(kicker: "Decisions 2 and 4 · nine cells, three columns, one row height",
-                                     title: "At a glance", count: Self.nine.count)
+                                     title: "At a glance")
             } content: {
                 WorkbenchCellGrid(Self.nine)
             }
 
             WorkbenchBlock {
                 WorkbenchBlockHeader(kicker: "Decision 3 · seven is prime, so the last row stretches",
-                                     title: "Incomplete last row", count: Self.seven.count)
+                                     title: "Incomplete last row")
             } content: {
                 WorkbenchCellGrid(Self.seven)
             }
@@ -46,6 +46,10 @@ public struct WorkbenchGalleryBlockSpecimen: View {
 
             WorkbenchGalleryScanSpecimen(
                 kicker: "Decision 8 · the same fold, open, inside its own block", initiallyExpanded: true)
+
+            WorkbenchGalleryFoldSpecimen()
+
+            WorkbenchGalleryAlignmentSpecimen()
         }
     }
 }

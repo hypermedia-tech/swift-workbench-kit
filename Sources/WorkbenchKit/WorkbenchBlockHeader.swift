@@ -1,10 +1,15 @@
 import SwiftUI
 
-/// The top of a block: a small uppercase kicker, the block's name, and on the trailing edge its
-/// count or its one control.
+/// The top of a block: a small uppercase kicker, the block's name, and on the trailing edge the
+/// one control the block may carry.
 ///
 /// The kicker is what makes a stack of blocks scannable — it says what KIND of thing this block
 /// is before you read what it is about. It is optional because some blocks are their own kind.
+///
+/// **No count.** The trailing edge carried one for a while and it was busy and told a reader
+/// nothing: a block header's count restated what was already visible in the rows underneath it.
+/// A count earns its place only where it describes something you cannot see, which is a fold's
+/// title, not a header. The slot itself stays — it is for a control.
 public struct WorkbenchBlockHeader<Trailing: View>: View {
     private let kicker: String?
     private let title: String
@@ -39,14 +44,5 @@ extension WorkbenchBlockHeader where Trailing == EmptyView {
     /// A header with nothing on its trailing edge.
     public init(kicker: String? = nil, title: String) {
         self.init(kicker: kicker, title: title) { EmptyView() }
-    }
-}
-
-extension WorkbenchBlockHeader where Trailing == WorkbenchBlockCount {
-    /// A header whose trailing edge carries a count.
-    public init(kicker: String? = nil, title: String, count: Int) {
-        self.init(kicker: kicker, title: title) {
-            WorkbenchBlockCount(count)
-        }
     }
 }
