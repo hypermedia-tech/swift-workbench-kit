@@ -176,4 +176,46 @@ struct WorkbenchPaletteTests {
         #expect(WorkbenchPalette.hoverTint.dark.alpha < 1)
         #expect(WorkbenchPalette.hoverTint.light.alpha < 1)
     }
+
+    // MARK: - Chips
+
+    /// A chip's ground is not one of `readingGrounds`, because only ONE token is ever drawn on it:
+    /// the tone whose wash it is. This is that rule, stated.
+    ///
+    /// One case per tone per appearance, for the reason the token sweep above gives: a failure
+    /// should name the colour and the appearance in the test's own identity. Both fills a chip can
+    /// sit on are checked, because the wash is a tint and the composite differs between them.
+    @Test("Every tone's word clears the text floor on its own chip wash",
+          arguments: WorkbenchPalette.Tone.allCases, [ColorScheme.light, .dark])
+    func everyToneClearsTheFloorOnItsOwnWash(tone: WorkbenchPalette.Tone, scheme: ColorScheme) {
+        let word = WorkbenchPalette.token(for: tone).value(for: scheme)
+        let wash = WorkbenchPalette.chipWash(for: tone).value(for: scheme)
+        for (name, fill) in [("block", WorkbenchPalette.block), ("inset", WorkbenchPalette.inset)] {
+            let ground = wash.composited(over: fill.value(for: scheme))
+            let ratio = WorkbenchContrast.ratio(word, ground)
+            #expect(
+                ratio >= WorkbenchContrast.textFloor,
+                "\(tone) on its wash over \(name) measured \(ratio)")
+        }
+    }
+
+    @Test("A chip's ground is a tint and not a fill",
+          arguments: WorkbenchPalette.Tone.allCases)
+    func theChipWashIsATintAndNotAFill(tone: WorkbenchPalette.Tone) {
+        #expect(WorkbenchPalette.chipWash(for: tone).light.alpha < 1)
+        #expect(WorkbenchPalette.chipWash(for: tone).dark.alpha < 1)
+    }
+
+    /// A wash too weak to see is not a chip, and one strong enough to read as a selection is a
+    /// different affordance — the bound `hoverTint` is held to, for the same reason. The two bands
+    /// overlap and that is not a mistake: a chip is bounded because it is a fill, not because it
+    /// must out-shout a hover. Measured range at the shipped alphas is 1.113–1.266.
+    @Test("A chip's ground is seen without reading as a selection",
+          arguments: WorkbenchPalette.Tone.allCases, [ColorScheme.light, .dark])
+    func theChipWashLiftsWithinItsBand(tone: WorkbenchPalette.Tone, scheme: ColorScheme) {
+        let wash = WorkbenchPalette.chipWash(for: tone).value(for: scheme)
+        let block = WorkbenchPalette.block.value(for: scheme)
+        let lift = WorkbenchContrast.ratio(wash.composited(over: block), block)
+        #expect(lift >= 1.10 && lift <= 1.40, "\(tone) wash lifts \(lift)")
+    }
 }

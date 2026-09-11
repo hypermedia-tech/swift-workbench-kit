@@ -89,4 +89,18 @@ public enum WorkbenchMetrics {
     /// Narrowest a cell in a hairline-divided cell grid may be before the grid drops a column.
     /// Wider than the reference page's 112 because Mac text is larger.
     public static let cellMinWidth: CGFloat = 120
+
+    // MARK: - Chips
+
+    /// Horizontal padding inside a chip. Narrower than `blockHInset`, because a chip is a word and
+    /// not a region: padded to a block's inset it reads as a button.
+    public static let chipHInset: CGFloat = 6
+
+    /// Vertical padding inside a chip. Small enough that a row of chips does not set the row's
+    /// height — the title does.
+    public static let chipVInset: CGFloat = 2
+
+    /// A chip's corner radius. Smaller than `insetCornerRadius` in proportion to the chip, so the
+    /// corner reads the same at the chip's size as a fold's does at a fold's.
+    public static let chipCornerRadius: CGFloat = 3
 }

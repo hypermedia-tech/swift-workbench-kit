@@ -96,4 +96,50 @@ public enum WorkbenchPalette {
 
     /// The call-site form: `.foregroundStyle(WorkbenchPalette.color(tone))`.
     public static func color(_ tone: Tone) -> Color { token(for: tone).color }
+
+    // MARK: - Chips
+
+    /// The alpha a chip's wash is drawn at. Lighter in light appearance: the ramp's light values are
+    /// dark colours, and the alpha that reads as a tint over a dark fill reads as a stain over white.
+    static let chipWashAlphaLight: Double = 0.08
+    static let chipWashAlphaDark: Double = 0.12
+
+    private static func makeChipWash(_ token: WorkbenchColorToken) -> WorkbenchColorToken {
+        WorkbenchColorToken(
+            light: WorkbenchColorValue(
+                red: token.light.red, green: token.light.green, blue: token.light.blue,
+                alpha: chipWashAlphaLight),
+            dark: WorkbenchColorValue(
+                red: token.dark.red, green: token.dark.green, blue: token.dark.blue,
+                alpha: chipWashAlphaDark))
+    }
+
+    /// Built once each, like every other token in this file. `WorkbenchColorToken`'s initialiser
+    /// allocates a dynamic `NSColor`, and a chip's ground is read inside a row's `body`: a list of
+    /// 180 issues carrying three chips apiece would otherwise allocate on every pass.
+    private static let alarmWash = makeChipWash(alarm)
+    private static let warningWash = makeChipWash(warning)
+    private static let cautionWash = makeChipWash(caution)
+    private static let noticeWash = makeChipWash(notice)
+    private static let affirmWash = makeChipWash(affirm)
+    private static let neutralWash = makeChipWash(textSecondary)
+
+    /// A chip's ground: the chip's own tone, washed back over whatever fill the chip sits on.
+    ///
+    /// A tint rather than an opaque fill per tone, for the reason `hoverTint` is one — a single value
+    /// works over `block` and over `inset`, and the suite composites it over both to check the tone's
+    /// own word still clears the text floor on it.
+    ///
+    /// Deliberately NOT one of `readingGrounds`: only the matching tone's word is ever drawn on a
+    /// wash, so the rule that holds it is `everyToneClearsTheFloorOnItsOwnWash`.
+    public static func chipWash(for tone: Tone) -> WorkbenchColorToken {
+        switch tone {
+        case .alarm: alarmWash
+        case .warning: warningWash
+        case .caution: cautionWash
+        case .notice: noticeWash
+        case .affirm: affirmWash
+        case .neutral: neutralWash
+        }
+    }
 }
