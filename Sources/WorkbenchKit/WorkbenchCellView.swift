@@ -11,9 +11,7 @@ public struct WorkbenchCellView: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(cell.value)
-                .font(WorkbenchTypography.number)
-                .foregroundStyle(colour)
+            Text(reading)
             Text(cell.label)
                 .labelRegister()
                 .fixedSize(horizontal: false, vertical: true)
@@ -29,5 +27,22 @@ public struct WorkbenchCellView: View {
     private var colour: Color {
         guard let tone = cell.tone else { return WorkbenchPalette.textPrimary.color }
         return WorkbenchPalette.color(tone)
+    }
+
+    /// The value and its qualifier as one piece of text, so the denominator sits on the value's
+    /// baseline and wraps with it. Two `Text`s in an `HStack` would break apart instead.
+    private var reading: AttributedString {
+        var reading = AttributedString(cell.value)
+        reading.font = WorkbenchTypography.number
+        reading.foregroundColor = colour
+
+        if let qualifier = cell.qualifier {
+            var denominator = AttributedString(" " + qualifier)
+            denominator.font = WorkbenchTypography.qualifier
+            denominator.foregroundColor = WorkbenchPalette.textLabel.color
+            reading.append(denominator)
+        }
+
+        return reading
     }
 }

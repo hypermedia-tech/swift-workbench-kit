@@ -16,11 +16,18 @@ import Foundation
 /// reach of any caller that is not on the main actor.
 nonisolated public struct WorkbenchCell: Sendable, Equatable {
     public let value: String
+    public let qualifier: String?
     public let label: String
     public let tone: WorkbenchPalette.Tone?
 
-    public init(value: String, label: String, tone: WorkbenchPalette.Tone? = nil) {
+    public init(
+        value: String,
+        qualifier: String? = nil,
+        label: String,
+        tone: WorkbenchPalette.Tone? = nil
+    ) {
         self.value = value
+        self.qualifier = qualifier
         self.label = label
         self.tone = tone
     }

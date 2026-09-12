@@ -131,7 +131,10 @@ struct WorkbenchPaletteTests {
           arguments: [ColorScheme.light, .dark])
     func tonesAreSeparatedFromTheActionColour(scheme: ColorScheme) {
         let action = WorkbenchPalette.action.value(for: scheme)
-        for tone in WorkbenchPalette.Tone.allCases where tone != .neutral {
+        // STATUS tones only. `neutral` is supporting text and was never on the ramp; `spotlight`
+        // IS the action colour, on purpose — a caller marking one reading as the headline. The rule
+        // this test holds is that nothing a reader takes as a STATUS may read as a link.
+        for tone in WorkbenchPalette.Tone.allCases where tone != .neutral && tone != .spotlight {
             let value = WorkbenchPalette.token(for: tone).value(for: scheme)
             let separation = WorkbenchContrast.hueSeparation(value, action)
             #expect(separation >= 30, "\(scheme) \(tone) is \(separation) degrees from action")
@@ -152,6 +155,25 @@ struct WorkbenchPaletteTests {
     }
 
     // MARK: - The tone map
+
+    /// `spotlight` is the action colour and that is the point — so it is pinned, because a future
+    /// palette edit that quietly moved it off `action` would break a drawing without breaking a test.
+    @Test("Spotlight is the action colour, deliberately", arguments: [ColorScheme.light, .dark])
+    func spotlightIsTheActionColour(scheme: ColorScheme) {
+        #expect(WorkbenchPalette.token(for: .spotlight).value(for: scheme)
+            == WorkbenchPalette.action.value(for: scheme))
+    }
+
+    /// It is still text, so it still holds the text floor on every fill it can sit on — the same
+    /// bar `action` itself is held to, and the reason it is not simply "the brand cyan".
+    @Test("Spotlight clears the text floor on every ground", arguments: [ColorScheme.light, .dark])
+    func spotlightClearsTheFloor(scheme: ColorScheme) {
+        let value = WorkbenchPalette.token(for: .spotlight).value(for: scheme)
+        for fill in [WorkbenchPalette.ground, WorkbenchPalette.block, WorkbenchPalette.inset] {
+            let ratio = WorkbenchContrast.ratio(value, fill.value(for: scheme))
+            #expect(ratio >= WorkbenchContrast.textFloor, "\(scheme) spotlight on \(fill) is \(ratio)")
+        }
+    }
 
     @Test func neutralReadsAsSupportingText() {
         #expect(WorkbenchPalette.token(for: .neutral).dark == WorkbenchPalette.textSecondary.dark)

@@ -12,7 +12,10 @@ public struct WorkbenchGalleryTypeSpecimen: View {
             VStack(alignment: .leading, spacing: 0) {
                 WorkbenchRow {
                     HStack(alignment: .firstTextBaseline, spacing: WorkbenchMetrics.blockHInset) {
-                        ForEach(WorkbenchPalette.Tone.allCases, id: \.self) { tone in
+                        // STATUS tones only. `spotlight` is the action colour and is never on the
+                        // ramp; drawing it in this row is the misuse the tone's own doc names.
+                        ForEach(WorkbenchPalette.Tone.allCases.filter { $0 != .spotlight },
+                                id: \.self) { tone in
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("128")
                                     .font(WorkbenchTypography.number)

@@ -46,9 +46,11 @@ public struct WorkbenchPaletteGallery: View {
     }
 
     /// The ramp does not change, so it is built once rather than on every pass through `body`.
-    private static let toneEntries: [WorkbenchGalleryEntry] = WorkbenchPalette.Tone.allCases.map {
-        WorkbenchGalleryEntry(name: $0.rawValue, token: WorkbenchPalette.token(for: $0))
-    }
+    /// Filed under "Status on block" and "Status on inset" — so status tones only. `spotlight` is
+    /// shown by `WorkbenchGalleryBlockSpecimen`, on a cell, which is the only place it belongs.
+    private static let toneEntries: [WorkbenchGalleryEntry] = WorkbenchPalette.Tone.allCases
+        .filter { $0 != .spotlight }
+        .map { WorkbenchGalleryEntry(name: $0.rawValue, token: WorkbenchPalette.token(for: $0)) }
 }
 
 // Both appearances in one canvas, because the judgement a palette gallery exists to support is

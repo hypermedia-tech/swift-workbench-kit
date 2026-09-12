@@ -17,6 +17,10 @@ public enum WorkbenchTypography {
     /// headlines competing, which is the opposite of an instrument cluster.
     public static let number = Font.title2.weight(.semibold).monospaced()
 
+    /// A ratio's denominator, set beside a `number` on the same baseline. Smaller and lighter, so
+    /// "177 of 180" reads as a proportion rather than as one long quantity.
+    public static let qualifier = Font.callout.monospaced()
+
     /// A block's name, in its header.
     public static let blockTitle = Font.headline
 

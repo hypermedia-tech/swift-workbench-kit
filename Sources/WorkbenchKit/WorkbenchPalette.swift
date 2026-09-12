@@ -61,12 +61,19 @@ public enum WorkbenchPalette {
 
     // MARK: - Status
 
-    /// A ranked ramp, hot to cold, plus a reading for something that carries no status.
+    /// A ranked ramp, hot to cold, plus a reading for something that carries no status, plus
+    /// `spotlight` for the one reading on a surface that is the point of the surface.
     ///
     /// Named for what a reader is being told, never for a caller's vocabulary — this package knows
     /// no product's Domain. A consumer maps its own words onto these.
+    ///
+    /// `spotlight` is NOT on the ramp and must never be used as though it were: it is the brand
+    /// colour, and it is the same colour as `action`. `notice` is a lavender rather than a blue
+    /// precisely so that a numeral on the ramp could not read as a link, and that still holds —
+    /// what changed is that a caller may now say "this one reading is the headline", deliberately,
+    /// once per surface. Two spotlit readings beside each other is the misuse.
     public enum Tone: String, CaseIterable, Sendable {
-        case alarm, warning, caution, notice, affirm, neutral
+        case alarm, warning, caution, notice, affirm, neutral, spotlight
     }
 
     public static let alarm = WorkbenchColorToken(lightHex: 0xC0242A, darkHex: 0xFF8589)
@@ -91,6 +98,7 @@ public enum WorkbenchPalette {
         case .notice: notice
         case .affirm: affirm
         case .neutral: textSecondary
+        case .spotlight: action
         }
     }
 
@@ -123,6 +131,9 @@ public enum WorkbenchPalette {
     private static let noticeWash = makeChipWash(notice)
     private static let affirmWash = makeChipWash(affirm)
     private static let neutralWash = makeChipWash(textSecondary)
+    /// `spotlight` is not a status, so it is never the ramp's chip — but the switch below is
+    /// exhaustive and a tone without a wash does not compile. It washes `action`, the colour it is.
+    private static let spotlightWash = makeChipWash(action)
 
     /// A chip's ground: the chip's own tone, washed back over whatever fill the chip sits on.
     ///
@@ -140,6 +151,7 @@ public enum WorkbenchPalette {
         case .notice: noticeWash
         case .affirm: affirmWash
         case .neutral: neutralWash
+        case .spotlight: spotlightWash
         }
     }
 }

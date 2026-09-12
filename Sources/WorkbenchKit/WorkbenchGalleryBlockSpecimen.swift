@@ -13,9 +13,9 @@ public struct WorkbenchGalleryBlockSpecimen: View {
         .init(value: "11", label: "High", tone: .warning),
         .init(value: "24", label: "Medium", tone: .caution),
         .init(value: "6", label: "Low", tone: .notice),
-        .init(value: "12 of 13", label: "Fixed", tone: .affirm),
+        .init(value: "12", qualifier: "of 13", label: "Fixed", tone: .affirm),
         .init(value: "44", label: "Occurrences"),
-        .init(value: "9", label: "Assets"),
+        .init(value: "9", qualifier: "of 9", label: "Assets", tone: .spotlight),
         .init(value: "2", label: "Could not be checked"),
         .init(value: "1", label: "Distinct package@version"),
     ]
