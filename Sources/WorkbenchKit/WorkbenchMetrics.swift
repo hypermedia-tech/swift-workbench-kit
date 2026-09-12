@@ -90,6 +90,11 @@ public enum WorkbenchMetrics {
     /// Wider than the reference page's 112 because Mac text is larger.
     public static let cellMinWidth: CGFloat = 120
 
+    /// Length of the mark beside a spotlit cell's numeral. Longer than the mark beside a row's
+    /// title because it stands against the number register, which is `.title2` rather than
+    /// `.headline` — a 14pt bar beside a 22pt numeral reads as a speck rather than a rule.
+    public static let cellMarkLength: CGFloat = 18
+
     // MARK: - Chips
 
     /// Horizontal padding inside a chip. Narrower than `blockHInset`, because a chip is a word and

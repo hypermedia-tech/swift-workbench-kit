@@ -11,7 +11,17 @@ public struct WorkbenchCellView: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(reading)
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                // Colour is never the only channel — `WorkbenchStatusMark`'s own rule. A spotlit
+                // reading says "this one is the headline" in the action colour, and the mark says
+                // it again in shape for a reader who cannot use the colour. Derived from the tone
+                // rather than asked for, because `spotlight` already means one-per-surface.
+                if cell.tone == .spotlight {
+                    WorkbenchStatusMark(
+                        .spotlight, length: WorkbenchMetrics.cellMarkLength, relativeTo: .title2)
+                }
+                Text(reading)
+            }
             Text(cell.label)
                 .labelRegister()
                 .fixedSize(horizontal: false, vertical: true)
