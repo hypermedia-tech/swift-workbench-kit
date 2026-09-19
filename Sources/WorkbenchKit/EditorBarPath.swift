@@ -7,25 +7,31 @@ import SwiftUI
 /// Marking: a component's menu marks the child that is ON the current path, which the chain
 /// already knows (it is the next component down). Only the top level of each menu can be on-path,
 /// so deeper submenus carry no mark and that is correct rather than missing.
-public struct EditorBarPath<Node: Identifiable>: View {
+///
+/// `trailing` is what follows the leaf at the path's own spacing: an `EditorBarPathChoice`, when
+/// the open thing has views of its own to choose between. It brings its own separator.
+public struct EditorBarPath<Node: Identifiable, Trailing: View>: View {
     private let chain: [Node]
     private let name: KeyPath<Node, String>
     private let children: KeyPath<Node, [Node]?>
     private let systemImage: (Node) -> String
     private let onOpen: (Node) -> Void
+    private let trailing: Trailing
 
     public init(
         chain: [Node],
         name: KeyPath<Node, String>,
         children: KeyPath<Node, [Node]?>,
         systemImage: @escaping (Node) -> String,
-        onOpen: @escaping (Node) -> Void
+        onOpen: @escaping (Node) -> Void,
+        @ViewBuilder trailing: () -> Trailing
     ) {
         self.chain = chain
         self.name = name
         self.children = children
         self.systemImage = systemImage
         self.onOpen = onOpen
+        self.trailing = trailing()
     }
 
     public var body: some View {
@@ -47,7 +53,23 @@ public struct EditorBarPath<Node: Identifiable>: View {
                         onOpen: onOpen)
                 }
             }
+            trailing
         }
         .lineLimit(1)
+    }
+}
+
+public extension EditorBarPath where Trailing == EmptyView {
+    /// A path with nothing after its leaf.
+    init(
+        chain: [Node],
+        name: KeyPath<Node, String>,
+        children: KeyPath<Node, [Node]?>,
+        systemImage: @escaping (Node) -> String,
+        onOpen: @escaping (Node) -> Void
+    ) {
+        self.init(
+            chain: chain, name: name, children: children, systemImage: systemImage,
+            onOpen: onOpen, trailing: { EmptyView() })
     }
 }
