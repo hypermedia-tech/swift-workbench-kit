@@ -16,6 +16,13 @@ import SwiftUI
 ///
 /// It draws its own leading chevron, so a caller that shows it only some of the time gets no
 /// stray separator. Hand it to `EditorBarPath`'s trailing slot and it sits at the path's spacing.
+///
+/// It GIVES WAY, last. A menu's label does not truncate, so written out it is as wide as its
+/// longest choice and figure, and that width was part of the narrowest the bar could be. It has
+/// two forms and shows the first that fits: written out, and its glyph alone (the words stay as
+/// the tooltip and as what VoiceOver reads; the menu is unchanged). Inside `EditorBarPath` the
+/// path shortens first: the path's forms are measured with this written out, and only when none
+/// of them fits does this fall back to its glyph.
 public struct EditorBarPathChoice<Choice: Identifiable>: View {
     private let title: String
     private let choices: [Choice]
@@ -49,29 +56,16 @@ public struct EditorBarPathChoice<Choice: Identifiable>: View {
         if let current = choices.first(where: { $0.id == currentID }) {
             HStack(spacing: 4) {
                 Image(systemName: "chevron.compact.right").foregroundStyle(.tertiary)
-                Menu {
-                    ForEach(choices) { choice in
-                        Button { onChoose(choice) } label: {
-                            Label {
-                                Text(choice[keyPath: name]).bold(choice.id == currentID)
-                            } icon: {
-                                Image(systemName: systemImage(choice))
-                            }
-                        }
-                        .badge(detail(choice).map { Text($0) })
-                    }
-                } label: {
-                    Label {
-                        Text(spoken(current))
-                    } icon: {
-                        Image(systemName: systemImage(current))
-                    }
-                    .foregroundStyle(.secondary)
+                ViewThatFits(in: .horizontal) {
+                    EditorBarPathChoiceMenu(
+                        choices: choices, current: current, written: true, title: title,
+                        spoken: spoken(current), name: name, detail: detail,
+                        systemImage: systemImage, onChoose: onChoose)
+                    EditorBarPathChoiceMenu(
+                        choices: choices, current: current, written: false, title: title,
+                        spoken: spoken(current), name: name, detail: detail,
+                        systemImage: systemImage, onChoose: onChoose)
                 }
-                .menuStyle(.borderlessButton)
-                .fixedSize()
-                .help(title)
-                .accessibilityLabel("\(title): \(spoken(current))")
             }
         }
     }
@@ -141,6 +135,48 @@ private struct PreviewEntry: Identifiable {
                     systemImage: { $0.glyph },
                     onChoose: { branch = $0.id })
             }
+    }
+    .padding()
+}
+
+#Preview("EditorBarPathChoice - gives way") {
+    // One deep path ending in a list choice, in bars of four widths. The path shortens first; the
+    // choice is the last thing to give up its words. The width goes on AFTER the bar, because a
+    // bar spans the container it is attached to.
+    let file = PreviewEntry(id: "finding.yaml", glyph: "curlybraces")
+    let finding = PreviewEntry(id: "7A43CD32-AF12-4E7C-BA5B-B95331C919CB", glyph: "folder.fill", children: [file])
+    let findings = PreviewEntry(id: "Findings", glyph: "folder.fill", children: [finding])
+    let root = PreviewEntry(id: "Ratlcecream", glyph: "folder.fill", children: [findings])
+    let lists = [
+        PreviewEntry(id: "Issues", count: 9, glyph: "exclamationmark.triangle"),
+        PreviewEntry(id: "Informational", count: 7_844, glyph: "info.circle")
+    ]
+
+    VStack(alignment: .leading, spacing: 24) {
+        ForEach([1_100, 720, 480, 330], id: \.self) { width in
+            Text("\(width) wide")
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .workbenchEditorBar(flip: nil) {
+                    EditorBarPath(
+                        chain: [root, findings, finding, file],
+                        name: \.id,
+                        children: \.children,
+                        systemImage: { $0.glyph },
+                        onOpen: { _ in },
+                        trailing: {
+                            EditorBarPathChoice(
+                                "List",
+                                choices: lists,
+                                currentID: "Informational",
+                                name: \.id,
+                                detail: { $0.count.map { String($0) } },
+                                systemImage: { $0.glyph },
+                                onChoose: { _ in })
+                        })
+                }
+                .frame(width: CGFloat(width))
+                .border(.separator)
+        }
     }
     .padding()
 }
