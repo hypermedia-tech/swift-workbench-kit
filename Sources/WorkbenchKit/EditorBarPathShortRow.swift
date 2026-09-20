@@ -5,9 +5,14 @@ import SwiftUI
 /// components wide, which is what gives the bar a minimum width that does not move with what is
 /// open.
 ///
+/// `namesLeaf` false takes the last step too: what is open becomes its glyph. The strip collapses
+/// from the left and the rightmost thing keeps its words longest, so this is the last thing the
+/// PATH gives up — after it, only whatever follows the leaf still has words.
+///
 /// Internal on purpose: only `EditorBarPath` builds it.
 struct EditorBarPathShortRow<Node: Identifiable, Trailing: View>: View {
     let chain: [Node]
+    let namesLeaf: Bool
     let name: KeyPath<Node, String>
     let children: KeyPath<Node, [Node]?>
     let systemImage: (Node) -> String
@@ -37,13 +42,19 @@ struct EditorBarPathShortRow<Node: Identifiable, Trailing: View>: View {
                 Image(systemName: "chevron.compact.right").foregroundStyle(.tertiary)
             }
             if let last = chain.last {
+                // Both renderers of the last component take the same instruction. A node with
+                // children is a menu you can still open once it is a glyph; one without is a name
+                // and its kind glyph.
                 if last[keyPath: children] == nil {
-                    EditorBarTitle(last[keyPath: name], systemImage: systemImage(last))
+                    EditorBarTitle(
+                        last[keyPath: name],
+                        systemImage: systemImage(last),
+                        named: namesLeaf)
                 } else {
                     EditorBarPathComponent(
                         node: last,
                         currentChildID: nil,
-                        named: true,
+                        named: namesLeaf,
                         name: name,
                         children: children,
                         systemImage: systemImage,
