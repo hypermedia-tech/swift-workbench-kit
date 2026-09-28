@@ -1,16 +1,17 @@
 # WorkbenchKit developer tasks.
 
-.PHONY: test lint lint-fix
+.PHONY: check-swiftlint test lint lint-fix
+
+check-swiftlint:
+	@command -v swiftlint >/dev/null 2>&1 || { echo "SwiftLint not installed — run 'brew install swiftlint'"; exit 1; }
 
 # Pure package, no app target, no Metal: swift test is the whole story.
 test:
 	swift test
 
-lint:
-	@command -v swiftlint >/dev/null 2>&1 || { echo "SwiftLint not installed — run 'brew install swiftlint'"; exit 0; }
+lint: check-swiftlint
 	swiftlint lint --quiet
 
-lint-fix:
-	@command -v swiftlint >/dev/null 2>&1 || { echo "SwiftLint not installed — run 'brew install swiftlint'"; exit 0; }
+lint-fix: check-swiftlint
 	swiftlint --fix
 	swiftlint lint --quiet
